@@ -1,0 +1,3 @@
+[submodule "pliers"]
+	path = pliers
+	url = /home/jovyan/nsd-biosoc/annotations/pliers
