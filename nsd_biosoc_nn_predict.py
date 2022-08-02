@@ -8,6 +8,9 @@ File Creation Date:
 File Final Edit Date:
 
 Description: shows how to use the NSDBioSocC3D network to predict social/non-social from fMRI data.
+
+* This file is under development.
+
 """
 # Import packages
 import numpy as np
@@ -41,6 +44,7 @@ def get_fMRI(fMRI_file):
 
     # Todo: determine if this is required/ what ch, fr, h, and w stand for -->
     # https://stackoverflow.com/questions/67087131/what-is-nchw-format#:~:text=NCHW%20stands%20for%3A,as%20a%201%2DD%20array.
+    # https://oneapi-src.github.io/oneDNN/dev_guide_understanding_memory_formats.html
     fMRI = fMRI.transpose(3, 0, 1, 2)  # ch, fr, h, w
     fMRI = np.expand_dims(fMRI, axis=0)  # batch axis
     fMRI = np.float32(fMRI)
