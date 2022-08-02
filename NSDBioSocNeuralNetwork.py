@@ -21,7 +21,7 @@ class NSDBioSocC3D(nn.Module):  # Mechanisms that module defines
     applied to fMRI data collected in the presence of visual stimuli in [2].
     """
     def __init__(self, input_dim_1, input_dim_2):
-        super(NSDBioSocNeuralNetwork, self).__init__()
+        super(NSDBioSocC3D, self).__init__()
 
         self.conv1 = nn.Conv3d(3, 64, kernel_size=(3, 3, 3), padding=(1, 1, 1))
         self.pool1 = nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
