@@ -13,26 +13,79 @@ Description: Contains the NSDBioSocNeuralNetwork class
 from torch import nn
 
 #%% Define neural network class
-class NSDBioSocNeuralNetwork(nn.Module):  # Mechanisms that module defines
+class NSDBioSocC3D(nn.Module):  # Mechanisms that module defines
     """
     This class is a temporary placeholder for the model which will be designed.
+
+    The current version is an implementation of the C3D network described in [1] which has been
+    applied to fMRI data collected in the presence of visual stimuli in [2].
     """
     def __init__(self, input_dim_1, input_dim_2):
         super(NSDBioSocNeuralNetwork, self).__init__()
-        self.flatten = nn.Flatten()  # pytorch likes you to set up your models as a bunch of layers, will take image matrix and flatten it into a list of numbers
-        self.linear_relu_stack = nn.Sequential(  # sequence of layers that you put together in a stack
-            nn.Linear(input_dim_1 * input_dim_2, 512),
-            # input dimesions are based on input data, nn.Linear is just a linear transformation of some input to some output, this is alinear transformation that converts our image into something else of size 512 long, 512 is arbitrary
-            nn.ReLU(),  # any value in input below zero, sets to zero
-            nn.Linear(512, 512),  # linearly recombine into another 512 length vector
-            nn.ReLU(),  # rectify it
-            nn.Linear(512, 2),
-            # convert 512 length vector to 2. this is the num labels in image dataset --> vector of approximate probabilities, but may not sum to 1, can use arctan to get them to be between 0 and 1, usually take highest and assume it is the label
-            nn.ReLU()  # rectify it
-        )
 
-    def forward(self, x):  # x is whatever the batch of inputs was
-        """"""
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
+        self.conv1 = nn.Conv3d(3, 64, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.pool1 = nn.MaxPool3d(kernel_size=(1, 2, 2), stride=(1, 2, 2))
+
+        self.conv2 = nn.Conv3d(64, 128, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.pool2 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
+
+        self.conv3a = nn.Conv3d(128, 256, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.conv3b = nn.Conv3d(256, 256, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.pool3 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
+
+        self.conv4a = nn.Conv3d(256, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.conv4b = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.pool4 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2))
+
+        self.conv5a = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.conv5b = nn.Conv3d(512, 512, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.pool5 = nn.MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=(0, 1, 1))
+
+        self.fc6 = nn.Linear(8192, 4096)
+        self.fc7 = nn.Linear(4096, 4096)
+        self.fc8 = nn.Linear(4096, 487)
+
+        self.dropout = nn.Dropout(p=0.5)
+
+        self.relu = nn.ReLU()
+        self.softmax = nn.Softmax()
+
+    def forward(self, x):
+
+        h = self.relu(self.conv1(x))
+        h = self.pool1(h)
+
+        h = self.relu(self.conv2(h))
+        h = self.pool2(h)
+
+        h = self.relu(self.conv3a(h))
+        h = self.relu(self.conv3b(h))
+        h = self.pool3(h)
+
+        h = self.relu(self.conv4a(h))
+        h = self.relu(self.conv4b(h))
+        h = self.pool4(h)
+
+        h = self.relu(self.conv5a(h))
+        h = self.relu(self.conv5b(h))
+        h = self.pool5(h)
+
+        h = h.view(-1, 8192)
+        h = self.relu(self.fc6(h))
+        h = self.dropout(h)
+        h = self.relu(self.fc7(h))
+        h = self.dropout(h)
+
+        logits = self.fc8(h)
+        probs = self.softmax(logits)
+
+        return probs
+
+"""
+References
+----------
+[1] Tran, Du, et al. "Learning spatiotemporal features with 3d convolutional networks." 
+Proceedings of the IEEE international conference on computer vision. 2015.
+
+[2] Umut Güçlü, Marcel A.J. van Gerven. "Increasingly complex representations of natural movies across the dorsal stream are shared between subjects."
+NeuroImage. 2017."""
