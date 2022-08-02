@@ -12,7 +12,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -134,7 +133,5 @@ Project Link: [https://github.com/neat-one/nsd_biosoc](https://github.com/neat-o
 [issues-url]: https://github.com/neat-one/nsd_biosoc/issues
 [license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
 [license-url]: https://github.com/neat-one/nsd_biosoc/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/veronica-porubsky/
 [product-screenshot]: https://github.com/neat-one/nsd_biosoc
 
