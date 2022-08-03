@@ -5,9 +5,6 @@ Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 GitHub repository: https://github.com/neat-one/nsd_biosoc
 
-File Creation Date: 
-File Final Edit Date:
-
 Description: A unit test suit for the nsd_biosoc project.
 """
 # Import packages
