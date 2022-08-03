@@ -4,9 +4,6 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-File Creation Date: 
-File Final Edit Date:
-
 Description: provides functions to construct training and test data for training NSDBioSocC3D networks.
 
 * This file is under development.

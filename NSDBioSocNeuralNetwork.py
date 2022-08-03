@@ -4,10 +4,15 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-File Creation Date:
-File Final Edit Date:
-
 Description: Contains the NSDBioSocNeuralNetwork class
+
+References
+----------
+[1] Tran, Du, et al. "Learning spatiotemporal features with 3d convolutional networks."
+Proceedings of the IEEE international conference on computer vision. 2015.
+
+[2] Umut Güçlü, Marcel A.J. van Gerven. "Increasingly complex representations of natural movies across the dorsal stream are shared between subjects."
+NeuroImage. 2017.
 """
 #%% Import packages
 from torch import nn
@@ -80,12 +85,3 @@ class NSDBioSocC3D(nn.Module):  # Mechanisms that module defines
         probs = self.softmax(logits)
 
         return probs
-
-"""
-References
-----------
-[1] Tran, Du, et al. "Learning spatiotemporal features with 3d convolutional networks." 
-Proceedings of the IEEE international conference on computer vision. 2015.
-
-[2] Umut Güçlü, Marcel A.J. van Gerven. "Increasingly complex representations of natural movies across the dorsal stream are shared between subjects."
-NeuroImage. 2017."""

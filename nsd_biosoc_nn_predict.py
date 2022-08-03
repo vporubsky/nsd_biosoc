@@ -4,9 +4,6 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-File Creation Date: 
-File Final Edit Date:
-
 Description: shows how to use the NSDBioSocC3D network to predict social/non-social from fMRI data.
 
 * This file is under development.
