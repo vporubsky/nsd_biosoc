@@ -5,9 +5,6 @@ Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 GitHub repository: https://github.com/neat-one/nsd_biosoc
 
-File Creation Date: 
-File Final Edit Date:
-
 Description: script to train the NSDBioSocC3D convolutional neural network.
 
 * This file is under development.
