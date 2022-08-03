@@ -9,28 +9,26 @@ Description: script to train the NSDBioSocC3D convolutional neural network.
 
 * This file is under development.
 """
-# Import packages
+#%% Import packages
 import torch
-from nsd_biosoc_nn_construct_data import get_training_data, get_test_data
+from nsd_biosoc_nn_construct_data import NSDBioSocDataset
 from torch import nn # tools in the neural network module
 from torch.utils.data import DataLoader # DataLoader is a class that feeds info into the model during training
-from torchvision.transforms import ToTensor #
+from torchvision import transforms
 from NSDBioSocNeuralNetwork import NSDBioSocC3D
-#
-training_data = get_training_data(
-    root = "data",
-    train = True,
-    download = True,
-    transform = ToTensor()
-)
+from pathlib import Path
+import os
 
-test_data = get_test_data(
-    root = "data",
-    train = False,
-    download = True,
-    transform = ToTensor()
-)
+#%% Set up paths to access data
+root = Path(os.getcwd())
+image_dir = root/'nsd_biosoc_fMRI'
+csv_file = root/'nsd_biosoc_data.csv'
 
+# Call dataset constructor to construct training and test datasets
+dataset = NSDBioSocDataset(root=root, image_dir=image_dir, csv_file=csv_file, transform = transforms.ToTensor())
+training_data, test_data = torch.utils.data.random_split(dataset, [50, 18]) # This will randomly split the data into train and test
+
+#%% Train CNN
 # Todo: determine optimal batch size depending on amount of fMRI data that can be processed at once, and with hyperparameter tuning
 batch_size = 64  # this is the number of examples that are passed to the neural network at once for better, more efficient training
 train_dataloader = DataLoader(training_data, batch_size = batch_size)
