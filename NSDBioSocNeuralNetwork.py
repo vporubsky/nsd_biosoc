@@ -4,7 +4,7 @@ Developer ORCID: 0000-0001-7216-3368
 Developer GitHub Username: vporubsky
 Developer Email: verosky@uw.edu
 
-Description: Contains the NSDBioSocNeuralNetwork class
+Description: Contains the NSDBioSocC3D class, which is adapted from the C3D network (see references).
 
 References
 ----------
