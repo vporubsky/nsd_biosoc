@@ -9,7 +9,7 @@ Description: shows how to use the NSDBioSocC3D network to predict social/non-soc
 * This file is under development.
 
 """
-# Import packages
+#%% Import packages
 import numpy as np
 import torch
 from torch.autograd import Variable
@@ -36,7 +36,7 @@ def get_fMRI(fMRI_file):
     Tensor
         a pytorch batch (n, ch, fr, h, w).
     """
-    fMRI = sorted(glob(join('data', fMRI_file, '*.png'))) # Todo: determine input data representation and size
+    fMRI = sorted(glob(join('../data', fMRI_file, '*.png'))) # Todo: determine input data representation and size
     fMRI = np.array([resize(io.imread(frame), output_shape=(112, 200), preserve_range=True) for frame in clip]) # Todo: check if need to resize
 
     # Todo: determine if this is required/ what ch, fr, h, and w stand for -->
@@ -78,6 +78,6 @@ def main():
         print(f"The subject saw a social scene.")
 
 
-# entry point
+#%% Entry point to main
 if __name__ == '__main__':
     main()
