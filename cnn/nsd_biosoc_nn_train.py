@@ -11,40 +11,61 @@ Description: script to train the NSDBioSocC3D convolutional neural network.
 
 Inital test uses sample_input_output.csv
 """
-#%% Import packages
+# %% Import packages
+import pandas as pd
 import torch
-from NSDBioSocDatasetConstructor import NSDBioSocDataset
-from torch import nn # tools in the neural network module
-from torch.utils.data import DataLoader # DataLoader is a class that feeds info into the model during training
+from cnn.NSDBioSocDatasetConstructor import NSDBioSocDatasetDF, NSDBioSocDataset
+from torch import nn  # tools in the neural network module
+from torch.utils.data import DataLoader  # DataLoader is a class that feeds info into the model during training
 from torchvision import transforms
-from NSDBioSocNeuralNetwork import NSDBioSocC3D
+from cnn.NSDBioSocNeuralNetwork import NSDBioSocC3D
 from pathlib import Path
 import os
 
-#%% Set up paths to access data
-root = Path(os.getcwd())
-image_dir = root/'nsd_biosoc_fMRI'
-csv_file = root/'nsd_biosoc_data.csv'
+# %% Set up paths to access data
+# root = Path(os.getcwd())
+# image_dir = root / 'annotation_data'
+# csv_file = root / image_dir / 'sample_input_output.csv'
+#
+# root = Path(os.getcwd())
+# image_dir = root / 'data_processing'
+# csv_file = root / image_dir / 'betas_sub1_ses1.csv'
+#
+# # %% Load and view the data --- does not work with the processed DataFrame data
+# # Todo: clean up dataframe --- there is an unnamed column, should this have a name?
+# df = pd.read_csv(csv_file, index_col=1)
+# # Call dataset constructor to construct training and test datasets
+# dataset = NSDBioSocDatasetDF(data=csv_file)
 
-# Call dataset constructor to construct training and test datasets
-dataset = NSDBioSocDataset(root=root, image_dir=image_dir, csv_file=csv_file, transform = transforms.ToTensor())
-training_data, test_data = torch.utils.data.random_split(dataset, [50, 18]) # This will randomly split the data into train and test
+# %% Attempt to load with first constructor class
+dataset = NSDBioSocDataset(
+    root=os.getcwd(),
+    image_dir=os.getcwd() + '/annotation_data/',
+    csv_file=os.getcwd() + '/annotation_data/sample_input_output.csv',
+    transform=transforms.ToTensor()
+)
 
-#%% Train CNN
+# %% Generate dataset
+
+training_data, test_data = torch.utils.data.random_split(dataset, [50,
+                                                                   12])  # This will randomly split the data into train and test
+
+# %% Train CNN
 # Todo: determine optimal batch size depending on amount of fMRI data that can be processed at once, and with hyperparameter tuning
-batch_size = 64  # this is the number of examples that are passed to the neural network at once for better, more efficient training
-train_dataloader = DataLoader(training_data, batch_size = batch_size)
+batch_size = 10  # this is the number of examples that are passed to the neural network at once for better, more efficient training
+train_dataloader = DataLoader(training_data, batch_size=batch_size)
 test_dataloader = DataLoader(test_data, batch_size=batch_size)
 
-
-# iterate over a dataloader, gives back tuples that include the true image you are training on and the the label for that image
-for (x,y) in test_dataloader:
+#%%
+# iterate over a dataloader, gives back tuples that include the true image you are training on and the label for that image
+for (x, y) in test_dataloader:
     print(f"Shape of x: [Batch-size, Image-channels, height, width]:")
     print(f"{x.shape}, {x.dtype}")
     print("Shape of y: [1 label per Batch]")
     print(f"{y.shape}, {y.dtype}")
     break
 
+#%%
 labels = [
     "non-social",
     "social",
@@ -54,9 +75,9 @@ labels = [
 model = NSDBioSocC3D(input_dim_1=50, input_dim_2=50)
 print(model)
 
-#%%
-loss_fn = nn.CrossEntropyLoss() # when you are producing a probability that something matches a label, this is a good function
-optimizer = torch.optim.SGD(model.parameters(), lr = 1e-3)
+# %%
+loss_fn = nn.CrossEntropyLoss()  # when you are producing a probability that something matches a label, this is a good function
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 # Perform the optimization
 size = len(train_dataloader.dataset)
@@ -73,26 +94,24 @@ for (batch_num, (x, y)) in enumerate(train_dataloader):
         (loss, current) = (loss.item(), batch_num * len(x))
         print(f"loss {loss: >7f} [{current:>5d}/{size:>5d}]")
 
-#%% Save trained network
+# %% Save trained network
 # Todo: save a .pkl file version of the trained network so that it can be easily reloaded and distributed without requiring retraining
 import os
+
 PATH = os.getcwd() + '/cnn/trained_cnn/trained_model.pkl'
 torch.save(model.state_dict(), PATH)
-
 
 # Load trained network to check that it was saved properly
 model = NSDBioSocC3D()
 model.load_state_dict(torch.load(PATH))
 model.eval()
 
-
-#%% Saving and loading models during training
+# %% Saving and loading models during training
 torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss}, PATH)
-
+    'epoch': epoch,
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'loss': loss}, PATH)
 
 model = NSDBioSocC3D()
 optimizer = TheOptimizerClass(*args, **kwargs)
