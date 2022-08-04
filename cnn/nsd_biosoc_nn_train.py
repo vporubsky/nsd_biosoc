@@ -12,35 +12,18 @@ Description: script to train the NSDBioSocC3D convolutional neural network.
 Inital test uses sample_input_output.csv
 """
 # %% Import packages
-import pandas as pd
 import torch
 from cnn.NSDBioSocDatasetConstructor import NSDBioSocDatasetDF, NSDBioSocDataset
 from torch import nn  # tools in the neural network module
 from torch.utils.data import DataLoader  # DataLoader is a class that feeds info into the model during training
 from torchvision import transforms
 from cnn.NSDBioSocNeuralNetwork import NSDBioSocC3D
-from pathlib import Path
 import os
-
-# %% Set up paths to access data
-# root = Path(os.getcwd())
-# image_dir = root / 'annotation_data'
-# csv_file = root / image_dir / 'sample_input_output.csv'
-#
-# root = Path(os.getcwd())
-# image_dir = root / 'data_processing'
-# csv_file = root / image_dir / 'betas_sub1_ses1.csv'
-#
-# # %% Load and view the data --- does not work with the processed DataFrame data
-# # Todo: clean up dataframe --- there is an unnamed column, should this have a name?
-# df = pd.read_csv(csv_file, index_col=1)
-# # Call dataset constructor to construct training and test datasets
-# dataset = NSDBioSocDatasetDF(data=csv_file)
 
 # %% Attempt to load with first constructor class
 dataset = NSDBioSocDataset(
     root=os.getcwd(),
-    image_dir=os.getcwd() + '/annotation_data/',
+    fMRI_dir=os.getcwd() + '/annotation_data/',
     csv_file=os.getcwd() + '/annotation_data/sample_input_output.csv',
     transform=transforms.ToTensor()
 )
@@ -97,7 +80,6 @@ for (batch_num, (x, y)) in enumerate(train_dataloader):
 # %% Save trained network
 # Todo: save a .pkl file version of the trained network so that it can be easily reloaded and distributed without requiring retraining
 import os
-
 PATH = os.getcwd() + '/cnn/trained_cnn/trained_model.pkl'
 torch.save(model.state_dict(), PATH)
 
@@ -107,21 +89,21 @@ model.load_state_dict(torch.load(PATH))
 model.eval()
 
 # %% Saving and loading models during training
-torch.save({
-    'epoch': epoch,
-    'model_state_dict': model.state_dict(),
-    'optimizer_state_dict': optimizer.state_dict(),
-    'loss': loss}, PATH)
-
-model = NSDBioSocC3D()
-optimizer = TheOptimizerClass(*args, **kwargs)
-
-checkpoint = torch.load(PATH)
-model.load_state_dict(checkpoint['model_state_dict'])
-optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-epoch = checkpoint['epoch']
-loss = checkpoint['loss']
-
-model.eval()
-# - or -
-model.train()
+# torch.save({
+#     'epoch': epoch,
+#     'model_state_dict': model.state_dict(),
+#     'optimizer_state_dict': optimizer.state_dict(),
+#     'loss': loss}, PATH)
+#
+# model = NSDBioSocC3D()
+# optimizer = TheOptimizerClass(*args, **kwargs)
+#
+# checkpoint = torch.load(PATH)
+# model.load_state_dict(checkpoint['model_state_dict'])
+# optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+# epoch = checkpoint['epoch']
+# loss = checkpoint['loss']
+#
+# model.eval()
+# # - or -
+# model.train()

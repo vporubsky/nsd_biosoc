@@ -22,7 +22,7 @@ import numpy as np
 
 class NSDBioSocDataset(Dataset):
 
-    def __init__(self, root, image_dir, csv_file, transform=None):
+    def __init__(self, root, fMRI_dir, csv_file, transform=None):
         """
         Creates an iterable dataset from a directory containing individual files to be processed in sequence.
 
@@ -32,8 +32,8 @@ class NSDBioSocDataset(Dataset):
         :param transform:
         """
         self.root = root
-        self.image_dir = image_dir
-        self.image_files = os.listdir(image_dir)
+        self.fMRI_dir = fMRI_dir
+        self.fMRI_files = os.listdir(fMRI_dir)
         self.data = list(pd.read_csv(csv_file).iloc[0:62, 2]) #csv_file second column should contain the labels for the data
         self.transform = transform
 
@@ -43,15 +43,14 @@ class NSDBioSocDataset(Dataset):
     # Todo: make this compatible with fMRI data, not image data
     def __getitem__(self, index):
         """Should generate input-output pairs, where input is fMRI data, output is the social (1)/ non-social (0) label."""
-        image_name = os.path.join(self.image_dir, self.image_files[index])
-        image = np.load(image_name) # fMRI scan
+        fMRI_filename = os.path.join(self.fMRI_dir, self.fMRI_files[index])
+        fMRI_sample = np.load(fMRI_filename) # fMRI scan
         label = self.data[index]
         # Transforms
-        print(index)
         if self.transform:
             # Transform can convert PIL image or numpy.ndarray to tensor
-            image = self.transform(image)
-        return (image, label)
+            fMRI_sample = self.transform(fMRI_sample)
+        return (fMRI_sample, label)
 
 
 
