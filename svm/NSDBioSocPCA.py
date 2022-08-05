@@ -7,7 +7,6 @@ Developer Email: verosky@uw.edu
 Description: script to run PCA on a single subject and single session
 """
 #%% Import packages
-#Import relevant packages.
 import os
 import matplotlib.pyplot as plt
 import numpy as np; np.random.seed(0)
@@ -101,6 +100,4 @@ ax.set_ylabel('PC2')
 ax.set_zlabel('PC3')
 plt.legend(['Social', 'Non-Social'])
 plt.show()
-
-#%% project data back onto PCs
 
