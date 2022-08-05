@@ -64,10 +64,11 @@ reloaded_betas = np.genfromtxt(os.getcwd() + '/data_processing/flattened_dataset
 #%% Save first 62 labels
 csv_file = os.getcwd() + '/annotation_data/sample_input_output.csv'
 labels = list(pd.read_csv(csv_file).iloc[0:62, 2])
+label_array = np.array(labels)
+np.save(os.getcwd()+'/data_processing/flattened_dataset/labels_session1_sub1.npy', label_array)
 
 #%% Save numpy.ndarray as numpy file
 np.save(os.getcwd()+'/data_processing/flattened_dataset/flattened_session1_sub1.npy', full_betas)
-
 
 #%% Reduce to every other column in
 full_betas_copy_filtered = full_betas.copy()[:, 1::2]
