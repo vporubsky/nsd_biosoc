@@ -80,7 +80,7 @@ for (batch_num, (x, y)) in enumerate(train_dataloader):
 # %% Save trained network
 # Todo: save a .pkl file version of the trained network so that it can be easily reloaded and distributed without requiring retraining
 import os
-PATH = os.getcwd() + '/cnn/trained_cnn/trained_model.pkl'
+PATH = os.getcwd() + '/cnn/trained_cnn/NSDBioSocC3D.pickle'
 torch.save(model.state_dict(), PATH)
 
 # Load trained network to check that it was saved properly
